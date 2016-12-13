@@ -176,5 +176,62 @@ module.exports = Component;
 ![alt tag](https://github.com/hongyin163/react-native-chart-android/blob/master/sample/chart2.JPG)
 
 There are some samples in sample folder,you can download them and try to run them.
+
+## Updates 
+
+### Update 1
+[Markerviews](https://github.com/PhilJay/MPAndroidChart/wiki/MarkerView) are supported on `Linecharts` and `Piecharts`.
+To enable them, All you need is to add an object with a `marker` key in the `data` field.
+
+All the available values are enlisted here - 
+
+For `Linechart`- 
+```
+  'marker': {
+    'xOffset': 170,
+    'yOffset': 80,
+    'backgroundColor': '#AA000000',
+    'textStructure': " $ {} ",
+    'textColor': '#FFFFFF',
+    'height': 100,
+    'padding': 20,
+    'textSize': 13,
+    'borderRadius': 30,
+    'setBold': true,
+    'setItalics': true
+  }
+
+```
+
+For Pie chart
+```
+  'marker': {
+    'backgroundColor': '#CC000000',
+    'textStructure': " $ {} ",
+    'textColor': '#FFFFFF',
+    'height': 150,
+    'angularOffset': 220,  # This is for offsetting in the same angle as the slice
+    'padding': 50,
+    'textSize': 13,
+    'borderRadius': 30,
+    'setBold': true,
+    'setItalics': true
+  },
+
+```
+
+### Update 2
+Gradients can be defined for the background fill in the `Linecharts`.
+This key needs to be added to `data.yvalues[0].config` (It takes precedence over `fillColor`)
+```
+  fillGradient: {
+    angle: '90',
+    startColor: '#1200FF',
+    endColor: '#FFFFFF'
+  }
+```
+`angle` uses the convention [mentioned here](https://developer.android.com/guide/topics/resources/drawable-resource.html#gradient-element).
+
+
 ## License
 MIT

@@ -1,6 +1,11 @@
 package cn.mandata.react_native_mpchart;
 
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.widget.TextView;
+import android.widget.RelativeLayout;
+import android.content.Context;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
@@ -21,6 +26,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.components.MarkerView;
+import com.github.mikephil.charting.highlight.Highlight;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -35,6 +42,8 @@ public class MPLineChartManager extends MPBarLineChartManager {
     private LineChart chart;
     private LineData data;
     private LineDataSet dataSet;
+    private ThemedReactContext rContext;
+
     @Override
     public String getName() {
         return this.CLASS_NAME;
@@ -43,6 +52,8 @@ public class MPLineChartManager extends MPBarLineChartManager {
     @Override
     protected LineChart createViewInstance(ThemedReactContext reactContext) {
         LineChart chart=new LineChart(reactContext);
+
+        this.rContext = reactContext;
 
         // initialise event listener to bind to chart
         new MPChartSelectionEventListener(chart);
@@ -53,6 +64,25 @@ public class MPLineChartManager extends MPBarLineChartManager {
     //{XValues:[],YValues:[{Data:[],Label:""},{}]}
     @ReactProp(name="data")
     public void setData(LineChart chart,ReadableMap rm){
+        if(rm.hasKey("marker")){
+            /*
+             * This is for configuring the marker view
+             */
+            ReadableMap markerMap = rm.getMap("marker");
+
+            if(
+                (!markerMap.hasKey("display")) ||
+                (markerMap.hasKey("display") && markerMap.getBoolean("display"))
+            ){
+                CustomMarkerViewManager markerViewObj = new CustomMarkerViewManager(
+                        this.rContext,
+                        R.layout.marker_view,
+                        markerMap
+                );
+
+                chart.setMarkerView(markerViewObj);
+            }
+        }
 
         ReadableArray xArray=rm.getArray("xValues");
         ArrayList<String> xVals=new ArrayList<String>();
@@ -119,12 +149,84 @@ public class MPLineChartManager extends MPBarLineChartManager {
             }
 
             if (config.hasKey("drawFill")) dataSet.setDrawFilled(config.getBoolean("drawFill"));
-            if (config.hasKey("fillColor")) dataSet.setFillColor(Color.parseColor(config.getString("fillColor")));
+
+            if (config.hasKey("fillGradient")){
+                ReadableMap gradientProperties = config.getMap("fillGradient");
+                GradientDrawable.Orientation defaultOrientation = GradientDrawable.Orientation.LEFT_RIGHT;
+                GradientDrawable.Orientation orientation;
+                if(gradientProperties.hasKey("angle")){
+                    String angle = gradientProperties.getString("angle");
+
+                    /*
+                    Following the convention mentioned here -
+                    https://developer.android.com/guide/topics/resources/drawable-resource.html#gradient-element
+                     */
+                    switch(angle){
+                        case "0":
+                            orientation = GradientDrawable.Orientation.LEFT_RIGHT;
+                            break;
+                        case "45":
+                            orientation = GradientDrawable.Orientation.TL_BR;
+                            break;
+                        case "90":
+                            orientation = GradientDrawable.Orientation.TOP_BOTTOM;
+                            break;
+                        case "135":
+                            orientation = GradientDrawable.Orientation.TR_BL;
+                            break;
+                        case "180":
+                            orientation = GradientDrawable.Orientation.RIGHT_LEFT;
+                            break;
+                        case "225":
+                            orientation = GradientDrawable.Orientation.BR_TL;
+                            break;
+                        case "270":
+                            orientation = GradientDrawable.Orientation.BOTTOM_TOP;
+                            break;
+                        case "315":
+                            orientation = GradientDrawable.Orientation.BR_TL;
+                            break;
+                        default:
+                            orientation = defaultOrientation;
+
+                    }
+                } else{
+                    orientation = defaultOrientation;
+                }
+
+                // Note: This supports an array of colors. Just supporting two of them right now.
+                int startColor;
+                if(gradientProperties.hasKey("startColor")){
+                    startColor = Color.parseColor(gradientProperties.getString("startColor"));
+                }else{
+                    // Setting a default value
+                    startColor = 0x00000000;
+                }
+
+                int endColor;
+                if(gradientProperties.hasKey("endColor")){
+                    endColor = Color.parseColor(gradientProperties.getString("endColor"));
+                }else{
+                    // Setting a default value
+                    endColor = 0xFFFFFF00;
+                }
+
+                GradientDrawable gd = new GradientDrawable(
+                        orientation,
+                        new int[] {startColor, endColor}
+                );
+                gd.setCornerRadius(0f);
+                dataSet.setFillDrawable(gd);
+            } else if (config.hasKey("fillColor")){
+                dataSet.setFillColor(Color.parseColor(config.getString("fillColor")));
+            }
+
             if (config.hasKey("fillAlpha")) dataSet.setFillAlpha((int)(255 * config.getDouble("fillAlpha")));
             if (config.hasKey("bezier")) dataSet.setDrawCubic(config.getBoolean("bezier"));
 
             chartData.addDataSet(dataSet);
         }
+
         chart.setData(chartData);
 
         /**
@@ -149,3 +251,4 @@ public class MPLineChartManager extends MPBarLineChartManager {
         }
     }
 }
+
