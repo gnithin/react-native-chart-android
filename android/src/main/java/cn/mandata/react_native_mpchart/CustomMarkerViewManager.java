@@ -1,6 +1,8 @@
 package cn.mandata.react_native_mpchart;
 
 import android.graphics.Color;
+import android.graphics.Paint.Style;
+
 import android.graphics.drawable.GradientDrawable;
 import android.widget.TextView;
 import android.widget.RelativeLayout;
@@ -55,6 +57,10 @@ public class CustomMarkerViewManager extends MarkerView {
     private float midX, midY;
     private boolean isPieChart = false;
     private int backgroundColor = Color.WHITE;
+
+    private float borderWidth  = 0;
+    private float borderRadius = 0;
+    private String borderColor  = "#000000";
 
     private boolean isAngularOffset = false;
     private float angularOffset = 0;
@@ -162,14 +168,42 @@ public class CustomMarkerViewManager extends MarkerView {
             }
         }
 
-        if(markerMap.hasKey("borderRadius")){
-            try{
-                this.setBorderRadius((float)markerMap.getDouble("borderRadius"));
-            }catch(UnexpectedNativeTypeException e){
-                if(ENABLE_LOG){
-                    Log.d("SetupOptions", e.toString());
+        Boolean hasBorderWidth  = markerMap.hasKey("borderWidth");
+        Boolean hasBorderRadius = markerMap.hasKey("borderRadius");
+        Boolean hasBorderColor  = markerMap.hasKey("borderColor");
+
+        if(hasBorderWidth  || hasBorderRadius || hasBorderColor){
+            if(hasBorderColor){
+               try{
+                   this.borderColor = markerMap.getString("borderColor");
+               } catch(UnexpectedNativeTypeException e){
+                   if(ENABLE_LOG){
+                       Log.d("SetupOptions", e.toString());
+                   }
+               }
+            }
+
+            if(hasBorderWidth){
+                try{
+                    this.borderWidth = (float)markerMap.getDouble("borderWidth");
+                } catch(UnexpectedNativeTypeException e){
+                    if(ENABLE_LOG){
+                        Log.d("SetupOptions", e.toString());
+                    }
                 }
             }
+
+            if(hasBorderRadius){
+                try{
+                    this.borderRadius = (float)markerMap.getDouble("borderRadius");
+                } catch(UnexpectedNativeTypeException e){
+                    if(ENABLE_LOG){
+                        Log.d("SetupOptions", e.toString());
+                    }
+                }
+            }
+
+            this.setBorder();
         }
         
         if(markerMap.hasKey("setBold")){
@@ -314,7 +348,11 @@ public class CustomMarkerViewManager extends MarkerView {
         this.markerViewWrapper.setLayoutParams(layout);
     } 
 
-    public void setBorderRadius(float borderRadius){
+    public void setTypeface(int attr){
+        this.markerTextView.setTypeface(null, attr);
+    }
+
+    public void setBorder(){
         ShapeDrawable markerViewDrawable = new ShapeDrawable();
         this.markerViewWrapper.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
@@ -323,17 +361,20 @@ public class CustomMarkerViewManager extends MarkerView {
         int size = 8;
         float[] radii = new float[8];
         for(int i=0;i<size;i++) {
-            radii[i] = borderRadius;
+            radii[i] = this.borderRadius;
         }
 
         markerViewDrawable.setShape(new RoundRectShape(radii, null, null));
         markerViewDrawable.getPaint().setColor(backgroundColor);
 
-        this.markerViewWrapper.setBackgroundDrawable(markerViewDrawable);
-    }
+        if(this.borderWidth > 0) {
+            // Setting the border color
+            markerViewDrawable.getPaint().setColor(Color.parseColor(this.borderColor));
+            markerViewDrawable.getPaint().setStyle(Style.STROKE);
+            markerViewDrawable.getPaint().setStrokeWidth(this.borderWidth); 
+        }
 
-    public void setTypeface(int attr){
-        this.markerTextView.setTypeface(null, attr);
+        this.markerViewWrapper.setBackgroundDrawable(markerViewDrawable);
     }
 }
 
