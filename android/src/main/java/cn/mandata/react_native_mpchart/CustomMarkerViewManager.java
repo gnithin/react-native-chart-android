@@ -271,12 +271,15 @@ public class CustomMarkerViewManager extends MarkerView {
      * @param posy
      */
     public void draw(Canvas canvas, float posx, float posy) {
-        if(this.isPieChart){
-            int height = canvas.getHeight();
-            int width = canvas.getWidth();
+        int canvasHeight = canvas.getHeight();
+        int canvasWidth = canvas.getWidth();
 
-            this.midX = width/2.0f;
-            this.midY = height/2.0f;
+        float originalPosX = posx;
+        float originalPosY = posy;
+
+        if(this.isPieChart){
+            this.midX = canvasWidth/2.0f;
+            this.midY = canvasHeight/2.0f;
         }
 
         if(this.isPieChart && this.isAngularOffset){
@@ -294,6 +297,36 @@ public class CustomMarkerViewManager extends MarkerView {
         // take offsets into consideration
         posx += getXOffset(posx);
         posy += getYOffset(posy);
+
+        // Check if the posx and posy are going out of bounds.
+        if (posx < 0){
+            posx = 0;
+        } else {
+            int markerWidth = this.markerViewWrapper.getWidth();
+            if (posx + markerWidth > canvasWidth){
+                // The markerview is going out of bounds over here
+                // Just attaching it to the side
+                if(this.isPieChart){
+                    posx = canvasWidth - markerWidth;
+                } else{
+                    posx = originalPosX - ((posx - originalPosX) + markerWidth);
+                    Log.d("markerViewManager", "modified posx - " + String.valueOf(posx));
+                }
+            }
+        }
+
+        if (posy < 0){
+            posy = 0;
+        } else {
+            int markerHeight = this.markerViewWrapper.getHeight();
+            if (posy + markerHeight > canvasHeight){
+                if(this.isPieChart){
+                    posy = canvasHeight - markerHeight;
+                } else{
+                    posy = originalPosY - ((posy - originalPosY) + markerHeight);
+                }
+            }
+        }
 
         // translate to the correct position and draw
         canvas.translate(posx, posy);
