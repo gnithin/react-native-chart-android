@@ -137,6 +137,28 @@ public class MPLineChartManager extends MPBarLineChartManager {
             if(config.hasKey("lineWidth")) dataSet.setLineWidth((float) config.getDouble("lineWidth"));
             if(config.hasKey("drawValues")) dataSet.setDrawValues(config.getBoolean("drawValues"));
             if(config.hasKey("valueTextColor")) dataSet.setValueTextColor(Color.parseColor(config.getString("valueTextColor")));
+
+            String indTitle;
+
+            indTitle = "drawVerticalHighlightIndicator";
+            if(config.hasKey(indTitle)){
+                try{
+                    boolean isDrawEnabled = config.getBoolean(indTitle);
+                    dataSet.setDrawVerticalHighlightIndicator(isDrawEnabled);
+                } catch(Exception e){
+                    Log.d(this.getClass().toString(), "Error in setting the " + indTitle);
+                }
+            }
+
+            indTitle = "drawHorizontalHighlightIndicator";
+            if(config.hasKey(indTitle)){
+                try{
+                    boolean isDrawEnabled = config.getBoolean(indTitle);
+                    dataSet.setDrawHorizontalHighlightIndicator(isDrawEnabled);
+                } catch(Exception e){
+                    Log.d(this.getClass().toString(), "Error in setting the " + indTitle);
+                }
+            }
             
             // Text Size for bar value
 
@@ -241,6 +263,7 @@ public class MPLineChartManager extends MPBarLineChartManager {
                 );
                 gd.setCornerRadius(0f);
                 dataSet.setFillDrawable(gd);
+
             } else if (config.hasKey("fillColor")){
                 dataSet.setFillColor(Color.parseColor(config.getString("fillColor")));
             }
