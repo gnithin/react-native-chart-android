@@ -159,6 +159,15 @@ public class MPLineChartManager extends MPBarLineChartManager {
                     Log.d(this.getClass().toString(), "Error in setting the " + indTitle);
                 }
             }
+
+            if(config.hasKey("highlightColor")){
+                try{
+                    dataSet.setHighLightColor(Color.parseColor(config.getString("highlightColor")));
+                }catch(Exception e){
+                    Log.d(this.getClass().toString(), "Error in setting the highlightColor");
+                    Log.d(this.getClass().toString(), "Error - " + e.toString());
+                }
+            }
             
             // Text Size for bar value
 
