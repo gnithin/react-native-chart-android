@@ -2,6 +2,7 @@ package cn.mandata.react_native_mpchart;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.RelativeLayout;
 import android.content.Context;
@@ -94,6 +95,28 @@ public class MPLineChartManager extends MPBarLineChartManager {
         for(int i=0;i<ra.size();i++){
             ReadableMap map=ra.getMap(i);
             ReadableArray data=map.getArray("data");
+
+            ArrayList<String> displayDataArr = new ArrayList<String>();
+
+            if(map.hasKey("displayData")){
+                ReadableArray displayData = map.getArray("displayData");
+
+                for(int dispIndex=0; dispIndex< displayData.size(); dispIndex++){
+                    try{
+                        String dispStr = displayData.getString(dispIndex);
+                        displayDataArr.add(dispStr);
+                    } catch (Exception e){
+                        Log.d(this.getClass().toString(), "Error!");
+                        Log.d(this.getClass().toString(), e.toString());
+                    }
+                }
+            }
+
+            if(displayDataArr.size() < data.size()){
+                // Adding the empty string as default buffer.
+                displayDataArr.add("");
+            }
+
             String label=map.getString("label");
             float[] vals=new float[data.size()];
             ArrayList<Entry> entries=new ArrayList<Entry>();
@@ -101,6 +124,7 @@ public class MPLineChartManager extends MPBarLineChartManager {
                 if (!data.isNull(j)) {
                     vals[j]=(float)data.getDouble(j);
                     Entry be=new Entry((float)data.getDouble(j),j);
+                    be.setData(displayDataArr.get(j));
                     entries.add(be);
                 }
             }

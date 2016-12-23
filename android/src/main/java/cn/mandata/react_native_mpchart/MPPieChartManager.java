@@ -150,15 +150,40 @@ public class MPPieChartManager extends MPPieRadarChartManager {
         PieData pieData=new PieData(xVals);
         pieData.setValueTextSize(16f);
         pieData.setValueTextColor(Color.WHITE);
+
         for(int i=0;i<ra.size();i++){
             ReadableMap map=ra.getMap(i);
             ReadableArray data=map.getArray("data");
             String label=map.getString("label");
+
+            ArrayList<String> displayDataArr = new ArrayList<String>();
+
+            if(map.hasKey("displayData")){
+                ReadableArray displayData = map.getArray("displayData");
+
+                for(int dispIndex=0; dispIndex< displayData.size(); dispIndex++){
+                    try{
+                        String dispStr = displayData.getString(dispIndex);
+                        displayDataArr.add(dispStr);
+                    } catch (Exception e){
+                        Log.d(this.getClass().toString(), "Error!");
+                        Log.d(this.getClass().toString(), e.toString());
+                    }
+                }
+            }
+
+            if(displayDataArr.size() < ra.size()){
+                // Adding the empty string as default buffer.
+                displayDataArr.add("");
+            }
+
+
             float[] vals=new float[data.size()];
             ArrayList<Entry> entries=new ArrayList<Entry>();
             for (int j=0;j<data.size();j++){
                 vals[j]=(float)data.getDouble(j);
                 Entry be=new Entry((float)data.getDouble(j),j);
+                be.setData(displayDataArr.get(j));
                 entries.add(be);
             }
             PieDataSet dataSet=new PieDataSet(entries,label);
