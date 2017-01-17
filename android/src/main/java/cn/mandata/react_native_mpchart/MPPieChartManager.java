@@ -11,6 +11,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.DataSet;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.components.MarkerView;
@@ -85,6 +86,14 @@ public class MPPieChartManager extends MPPieRadarChartManager {
     public void setCenterTextColor(PieChart chart, String colorVal){
         chart.setCenterTextColor(Color.parseColor(colorVal));
         chart.invalidate();
+    }
+
+    @ReactProp(name="highlightValue")
+    public void setHighlightValue(PieChart chart, int highlightVal){
+        if (highlightVal >= 0){
+            chart.highlightValue(new Highlight(highlightVal, 0));
+            chart.invalidate();
+        }
     }
 
     @ReactProp(name="holeColor")

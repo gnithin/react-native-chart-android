@@ -25,6 +25,7 @@ PieChart.propTypes = {
     doubleTapToZoomEnabled:PropTypes.bool,
     highlightPerDragEnabled:PropTypes.bool,
     highlightPerTapEnabled:PropTypes.bool,
+    highlightValue: PropTypes.number,
     dragDecelerationEnabled:PropTypes.bool,
     dragDecelerationFrictionCoef:PropTypes.number,
     maxVisibleValueCount:PropTypes.number,
