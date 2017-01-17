@@ -41,8 +41,10 @@ PieChart.propTypes = {
     transparentCircleRadius: PropTypes.number,
     drawSliceText: PropTypes.bool,
     usePercentValues: PropTypes.bool,
+    centerTextColor: PropTypes.string,
     centerText: PropTypes.string,
-    centerTextRadiusPercent: PropTypes.number
+    centerTextRadiusPercent: PropTypes.number,
+    holeColor: PropTypes.string
 }
 
 var MPPieChart = requireNativeComponent('MPPieChart', PieChart);
