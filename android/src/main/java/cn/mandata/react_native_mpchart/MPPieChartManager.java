@@ -81,6 +81,11 @@ public class MPPieChartManager extends MPPieRadarChartManager {
         chart.invalidate();
     }
 
+    @ReactProp(name="centerTextColor")
+    public void setCenterTextColor(PieChart chart, String colorVal){
+        chart.setCenterTextColor(Color.parseColor(colorVal));
+    }
+
     @ReactProp(name = "centerTextRadiusPercent", defaultFloat = 1.f)
     public void setCenterTextRadiusPercent(PieChart chart, float percent){
         chart.setCenterTextRadiusPercent(percent);
