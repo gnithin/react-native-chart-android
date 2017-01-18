@@ -108,12 +108,15 @@ public class MPLineChartManager extends MPBarLineChartManager {
             entries.add(be);*/
             ReadableMap config= map.getMap("config");
             LineDataSet dataSet=new LineDataSet(entries,label);
+
             if(config.hasKey("drawCircles")) dataSet.setDrawCircles(config.getBoolean("drawCircles"));
             if(config.hasKey("circleSize")) dataSet.setCircleSize((float) config.getDouble("circleSize"));
             if(config.hasKey("lineWidth")) dataSet.setLineWidth((float) config.getDouble("lineWidth"));
             if(config.hasKey("drawValues")) dataSet.setDrawValues(config.getBoolean("drawValues"));
             if(config.hasKey("valueTextColor")) dataSet.setValueTextColor(Color.parseColor(config.getString("valueTextColor")));
-            
+            if(config.hasKey("drawHorizontalHighlightIndicator")){dataSet.setDrawHorizontalHighlightIndicator(config.getBoolean("drawHorizontalHighlightIndicator"));}
+            if(config.hasKey("drawVerticalHighlightIndicator")){dataSet.setDrawVerticalHighlightIndicator(config.getBoolean("drawVerticalHighlightIndicator"));}
+
             // Text Size for bar value
 
             if(config.hasKey("valueTextSize")) dataSet.setValueTextSize((float)config.getDouble("valueTextSize"));
