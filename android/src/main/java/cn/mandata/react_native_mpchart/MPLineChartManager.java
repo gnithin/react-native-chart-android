@@ -2,6 +2,7 @@ package cn.mandata.react_native_mpchart;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.RelativeLayout;
 import android.content.Context;
@@ -79,9 +80,29 @@ public class MPLineChartManager extends MPBarLineChartManager {
                         R.layout.marker_view,
                         markerMap
                 );
-
                 chart.setMarkerView(markerViewObj);
             }
+        }
+
+        if(rm.hasKey("highlightCircle")){
+            ReadableMap highlightViewMap = rm.getMap("highlightCircle");
+
+            if(
+                    (!highlightViewMap.hasKey("display")) ||
+                    (highlightViewMap.hasKey("display") && highlightViewMap.getBoolean("display"))
+            ){
+                chart.setDrawCustomHighlightViews(true);
+
+                CustomHighlightViewManager highlightViewObj = new CustomHighlightViewManager(
+                        this.rContext,
+                        R.layout.marker_view,
+                        highlightViewMap
+                );
+
+                // Sending all the objects to the drawer method.
+                chart.setCustomHighlightView(highlightViewObj);
+            }
+
         }
 
         ReadableArray xArray=rm.getArray("xValues");
