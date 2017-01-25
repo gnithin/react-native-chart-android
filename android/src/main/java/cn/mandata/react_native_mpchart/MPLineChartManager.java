@@ -86,7 +86,16 @@ public class MPLineChartManager extends MPBarLineChartManager {
     ){
         switch(commandType){
             case CUSTOM_HIGHLIGHT_METHOD:
-                this.customHighlightValMethod();
+                if(args != null && args.size() > 0){
+                    try{
+                        int highlightIndex = args.getInt(CUSTOM_HIGHLIGHT_METHOD - 1);
+                        this.customHighlightValMethod(((LineChart)view), highlightIndex);
+                    } catch(Exception e){
+                        if(ENABLE_LOG){
+                            Log.d(this.getClass().getName(), "Failed calling the customHighlightValMethod");
+                        }
+                    }
+                }
                 break;
             default:
                 if(ENABLE_LOG){
@@ -96,13 +105,20 @@ public class MPLineChartManager extends MPBarLineChartManager {
         }
     }
 
-    @ReactMethod
-    public void customHighlightValMethod(){
-        if(ENABLE_LOG){
-            Log.d("ReactMethodTrialJava", "Hey! It's working.");
+    public void customHighlightValMethod(LineChart chartView, int highlightIndex){
+        // Rest of the customHighlight logic here
+        Highlight[] highlightedValues = chartView.getHighlighted();
+        if(highlightedValues.length > 0){
+            try{
+                // Get the default first value out from highlights
+                Highlight currentHighlight = highlightedValues[0];
+                chartView.highlightValue(currentHighlight.getXIndex(), highlightIndex);
+            } catch (Exception e){
+                if(ENABLE_LOG){
+                    Log.d(this.getClass().getName(), "Failed to highlight the new value.");
+                }
+            }
         }
-
-        // Rest of the customHighlightLogic here
     }
 
     //{XValues:[],YValues:[{Data:[],Label:""},{}]}

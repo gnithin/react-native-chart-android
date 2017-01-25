@@ -20,26 +20,25 @@ class LineChart extends Component {
       // Currently, there is never a use-case to do so.
       // If there is ever a case, make sure to put the logic for customHighlightVal 
       // in an else and return false.
-      console.log("Inside ShouldComponentUpdate");
-      console.log("Custom highlightVal value -", nextProps.customHighlightVal)
-      console.log("Calling method");
-
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(this),
-        UIManager.MPLineChart.Commands.customHighlightValMethod,
-        []
-      );
       
-      /*
       // Getting the customValue here.
       if(typeof nextProps.customHighlightVal !== "undefined"){
         let hVal = parseInt(nextProps.customHighlightVal);
 
         if(!isNaN(hVal) && hVal >= 0){
-          //MPLineChart.customHighlightVal(findNodeHandle(this), hVal); 
+          // This is significantly different than in iOS. 
+          // That's because ViewManagers are involved and not modules, so @ReactMethod won't work here.
+          
+          // This trick is based off of this link - 
+          // https://medium.com/@john1jan/communicating-to-and-from-native-ui-components-in-react-native-android-b8abcfb2f9c8#.vcasx2va3
+          // react-native docs for this is notoriously hard to find.
+          UIManager.dispatchViewManagerCommand(
+            findNodeHandle(this),
+            UIManager.MPLineChart.Commands.customHighlightValMethod,
+            [hVal]
+          );
         }
       }
-      */
 
       return false;
     }
