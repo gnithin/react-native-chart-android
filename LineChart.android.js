@@ -1,10 +1,49 @@
 import React, {Component, PropTypes} from 'react';
-import {requireNativeComponent, View} from 'react-native';
+import {
+  NativeModules,
+  findNodeHandle,
+  requireNativeComponent, 
+  View
+} from 'react-native';
+var UIManager = require('UIManager');
+
+const MPLineChart = requireNativeComponent('MPLineChart', LineChart);
 
 class LineChart extends Component {
     constructor(props) {
         super(props);
     }
+
+    shouldComponentUpdate(nextProps, nextState) {
+      // NOTE - Never update the line chart. It will render the whole graph again,
+      // thus breaking the customHighlightVal logic flow.
+      // Currently, there is never a use-case to do so.
+      // If there is ever a case, make sure to put the logic for customHighlightVal 
+      // in an else and return false.
+      console.log("Inside ShouldComponentUpdate");
+      console.log("Custom highlightVal value -", nextProps.customHighlightVal)
+      console.log("Calling method");
+
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(this),
+        UIManager.MPLineChart.Commands.customHighlightValMethod,
+        []
+      );
+      
+      /*
+      // Getting the customValue here.
+      if(typeof nextProps.customHighlightVal !== "undefined"){
+        let hVal = parseInt(nextProps.customHighlightVal);
+
+        if(!isNaN(hVal) && hVal >= 0){
+          //MPLineChart.customHighlightVal(findNodeHandle(this), hVal); 
+        }
+      }
+      */
+
+      return false;
+    }
+
 
     render() {
         return (
@@ -47,7 +86,5 @@ LineChart.propTypes = {
     zoomTo: PropTypes.object,
     extraOffsets: PropTypes.string
 }
-
-var MPLineChart = requireNativeComponent('MPLineChart', LineChart);
 
 export default LineChart;

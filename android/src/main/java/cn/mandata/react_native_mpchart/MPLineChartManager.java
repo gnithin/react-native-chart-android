@@ -2,14 +2,18 @@ package cn.mandata.react_native_mpchart;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.RelativeLayout;
 import android.content.Context;
 import android.widget.RelativeLayout.LayoutParams;
 
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -31,6 +35,7 @@ import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.highlight.Highlight;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -38,6 +43,9 @@ import java.util.Random;
  */
 public class MPLineChartManager extends MPBarLineChartManager {
     private String CLASS_NAME="MPLineChart";
+    private static final int CUSTOM_HIGHLIGHT_METHOD = 1;
+    private static final Boolean ENABLE_LOG = true;
+
     private Random random;//用于产生随机数
 
     private LineChart chart;
@@ -60,6 +68,41 @@ public class MPLineChartManager extends MPBarLineChartManager {
         new MPChartSelectionEventListener(chart);
 
         return  chart;
+    }
+
+    @Override
+    public Map<String, Integer> getCommandsMap(){
+        return MapBuilder.of(
+                "customHighlightValMethod",
+                CUSTOM_HIGHLIGHT_METHOD
+        );
+    }
+
+    @Override
+    public void receiveCommand(
+            BarLineChartBase view,
+            int commandType,
+            ReadableArray args
+    ){
+        switch(commandType){
+            case CUSTOM_HIGHLIGHT_METHOD:
+                this.customHighlightValMethod();
+                break;
+            default:
+                if(ENABLE_LOG){
+                    Log.d(this.getClass().getName(), "Cannot find the class value for the command Type - " + String.valueOf(commandType));
+                }
+                break;
+        }
+    }
+
+    @ReactMethod
+    public void customHighlightValMethod(){
+        if(ENABLE_LOG){
+            Log.d("ReactMethodTrialJava", "Hey! It's working.");
+        }
+
+        // Rest of the customHighlightLogic here
     }
 
     //{XValues:[],YValues:[{Data:[],Label:""},{}]}
