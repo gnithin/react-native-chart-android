@@ -30,6 +30,7 @@ public class CustomHighlightViewManager extends MarkerView {
     private RelativeLayout markerViewWrapper;
     private float xoffset = 0;
     private float yoffset = 0;
+    private boolean dynHighlightColor = true;
 
     private int outerColor = Color.WHITE;
     private int innerColor = Color.BLACK;
@@ -54,7 +55,7 @@ public class CustomHighlightViewManager extends MarkerView {
         innerColor
         outerRadius
         innerRadius
-        TODO: dynChangeHighlightColor - This has to be figured out.
+        dynChangeHighlightColor
          */
         if(markerMap.hasKey("outerColor")){
             try {
@@ -99,6 +100,18 @@ public class CustomHighlightViewManager extends MarkerView {
                 }
             }
         }
+
+        if(markerMap.hasKey("dynChangeHighlightColor")){
+            try {
+                this.setDynHighlightColor(markerMap.getBoolean("dynChangeHighlightColor"));
+            }catch(UnexpectedNativeTypeException e){
+                if(ENABLE_LOG){
+                    Log.d("CustomHighlightView - ", e.toString());
+                }
+            }
+        }
+
+
     }
 
     // callbacks everytime the MarkerView is redrawn, can be used to update the
@@ -110,7 +123,16 @@ public class CustomHighlightViewManager extends MarkerView {
 
     @Override
     public void preDraw(ChartData chartData, Highlight highlight){
-        // Empty stub.
+        if(this.dynHighlightColor){
+            int currentIndex = highlight.getDataSetIndex();
+            int[] chartColors = chartData.getColors();
+            int chartColorsLen = chartColors.length;
+
+            if(chartColors != null && chartColorsLen > 0 && currentIndex < chartColorsLen && currentIndex > 0){
+                this.outerColor= chartColors[currentIndex];
+            }
+
+        }
     }
 
     @Override
@@ -182,5 +204,7 @@ public class CustomHighlightViewManager extends MarkerView {
     public void setInnerRadius (int innerRadius){
         this.innerRadius = innerRadius;
     }
+
+    public void setDynHighlightColor (boolean isEnabled) { this.dynHighlightColor = isEnabled; }
 }
 

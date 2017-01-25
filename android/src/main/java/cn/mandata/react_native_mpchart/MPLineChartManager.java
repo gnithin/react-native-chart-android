@@ -88,11 +88,13 @@ public class MPLineChartManager extends MPBarLineChartManager {
             case CUSTOM_HIGHLIGHT_METHOD:
                 if(args != null && args.size() > 0){
                     try{
-                        int highlightIndex = args.getInt(CUSTOM_HIGHLIGHT_METHOD - 1);
+                        ;
+                        int highlightIndex = args.getInt(args.size() - 1);
                         this.customHighlightValMethod(((LineChart)view), highlightIndex);
                     } catch(Exception e){
                         if(ENABLE_LOG){
                             Log.d(this.getClass().getName(), "Failed calling the customHighlightValMethod");
+                            Log.d(this.getClass().getName(), e.toString());
                         }
                     }
                 }
@@ -108,7 +110,7 @@ public class MPLineChartManager extends MPBarLineChartManager {
     public void customHighlightValMethod(LineChart chartView, int highlightIndex){
         // Rest of the customHighlight logic here
         Highlight[] highlightedValues = chartView.getHighlighted();
-        if(highlightedValues.length > 0){
+        if(highlightedValues != null && highlightedValues.length > 0){
             try{
                 // Get the default first value out from highlights
                 Highlight currentHighlight = highlightedValues[0];
@@ -116,6 +118,7 @@ public class MPLineChartManager extends MPBarLineChartManager {
             } catch (Exception e){
                 if(ENABLE_LOG){
                     Log.d(this.getClass().getName(), "Failed to highlight the new value.");
+                    Log.d(this.getClass().getName(), e.toString());
                 }
             }
         }
