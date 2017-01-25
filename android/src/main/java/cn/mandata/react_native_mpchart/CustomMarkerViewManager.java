@@ -24,6 +24,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -203,6 +204,11 @@ public class CustomMarkerViewManager extends MarkerView {
     public void refreshContent(Entry e, Highlight highlight) {
         String displayText = this.textStructure.replace("{}", String.valueOf(e.getVal()));
         markerTextView.setText(displayText);
+    }
+
+    @Override
+    public void preDraw(ChartData chartData, Highlight highlight){
+        // Empty stub.
     }
 
     @Override
