@@ -175,11 +175,25 @@ public class MPPieChartManager extends MPPieRadarChartManager {
             ReadableMap map=ra.getMap(i);
             ReadableArray data=map.getArray("data");
             String label=map.getString("label");
+
+            boolean isDisplayData = false;
+            ReadableArray displayArr = null;
+
+            if(map.hasKey("displayData")){
+                displayArr = map.getArray("displayData");
+                isDisplayData = true;
+            }
+
             float[] vals=new float[data.size()];
             ArrayList<Entry> entries=new ArrayList<Entry>();
             for (int j=0;j<data.size();j++){
                 vals[j]=(float)data.getDouble(j);
                 Entry be=new Entry((float)data.getDouble(j),j);
+
+                if(isDisplayData && displayArr != null){
+                    be.setData(displayArr.getString(j));
+                }
+
                 entries.add(be);
             }
             PieDataSet dataSet=new PieDataSet(entries,label);
