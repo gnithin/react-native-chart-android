@@ -202,7 +202,21 @@ public class CustomMarkerViewManager extends MarkerView {
     // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        String displayText = this.textStructure.replace("{}", String.valueOf(e.getVal()));
+        String unformattedStr = String.valueOf(e.getVal());
+
+        // The entry data needs to be populated here.
+        Object data = e.getData();
+        if(data != null){
+            try{
+                unformattedStr = String.valueOf(data);
+            } catch(Exception formatStrFetchErr){
+                if(ENABLE_LOG){
+                    Log.d(this.getClass().getName(), formatStrFetchErr.toString());
+                }
+            }
+        }
+
+        String displayText = this.textStructure.replace("{}", unformattedStr);
         markerTextView.setText(displayText);
     }
 

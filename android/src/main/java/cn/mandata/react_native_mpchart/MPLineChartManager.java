@@ -115,16 +115,32 @@ public class MPLineChartManager extends MPBarLineChartManager {
         for(int i=0;i<ra.size();i++){
             ReadableMap map=ra.getMap(i);
             ReadableArray data=map.getArray("data");
+
             String label=map.getString("label");
+
+            boolean isDisplayData = false;
+            ReadableArray displayArr = null;
+
+            if(map.hasKey("displayData")){
+                displayArr = map.getArray("displayData");
+                isDisplayData = true;
+            }
+
             float[] vals=new float[data.size()];
             ArrayList<Entry> entries=new ArrayList<Entry>();
             for (int j=0;j<data.size();j++){
                 if (!data.isNull(j)) {
                     vals[j]=(float)data.getDouble(j);
+
                     Entry be=new Entry((float)data.getDouble(j),j);
+                    if(isDisplayData && displayArr != null){
+                        be.setData(displayArr.getString(j));
+                    }
+
                     entries.add(be);
                 }
             }
+
             /*BarEntry be=new BarEntry(vals,i);
             entries.add(be);*/
             ReadableMap config= map.getMap("config");
