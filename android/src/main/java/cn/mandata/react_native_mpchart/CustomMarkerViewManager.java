@@ -1,7 +1,9 @@
 package cn.mandata.react_native_mpchart;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.shapes.Shape;
 import android.widget.TextView;
 import android.widget.RelativeLayout;
 import android.content.Context;
@@ -68,6 +70,13 @@ public class CustomMarkerViewManager extends MarkerView {
         markerViewWrapper = (RelativeLayout) findViewById(R.id.markViewWrapper);
 
         setupOptions(markerMap);
+
+        if(markerMap.hasKey("borderWidth")){
+            // Adding the background border
+            if(markerMap.getInt("borderWidth") > 0){
+                markerViewWrapper.setBackground(getResources().getDrawable(R.drawable.background_border));
+            }
+        }
     }
 
     public void setupOptions(ReadableMap markerMap){
@@ -280,6 +289,26 @@ public class CustomMarkerViewManager extends MarkerView {
         // take offsets into consideration
         posx += getXOffset(posx);
         posy += getYOffset(posy);
+
+        // TODO: Check if the markerview goes out of bounds and correct it
+        LayoutParams textViewParams = (LayoutParams) this.markerTextView.getLayoutParams();
+        int textViewHeight = textViewParams.height;
+        int textViewWidth = textViewParams.width;
+
+        int canvasWidth = canvas.getWidth();
+        int canvasHeight = canvas.getHeight();
+
+        if((textViewHeight + posy) > canvasHeight){
+            posy = canvasHeight - textViewHeight;
+        } else if(posy < 0){
+            posy = 0;
+        }
+
+        if((textViewWidth + posx) > canvasWidth){
+            posx = canvasWidth - textViewWidth;
+        }else if (posx < 0){
+            posx = 0;
+        }
 
         // translate to the correct position and draw
         canvas.translate(posx, posy);
