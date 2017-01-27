@@ -58,6 +58,7 @@ public class CustomMarkerViewManager extends MarkerView {
     private float midX, midY;
     private boolean isPieChart = false;
     private int backgroundColor = Color.WHITE;
+    private int paddingVal;
 
     private boolean isAngularOffset = false;
     private float angularOffset = 0;
@@ -266,6 +267,9 @@ public class CustomMarkerViewManager extends MarkerView {
      * @param posy
      */
     public void draw(Canvas canvas, float posx, float posy) {
+        float originalX = posx;
+        float originalY = posy;
+
         if(this.isPieChart){
             int height = canvas.getHeight();
             int width = canvas.getWidth();
@@ -291,9 +295,14 @@ public class CustomMarkerViewManager extends MarkerView {
         posy += getYOffset(posy);
 
         // TODO: Check if the markerview goes out of bounds and correct it
-        LayoutParams textViewParams = (LayoutParams) this.markerTextView.getLayoutParams();
-        int textViewHeight = textViewParams.height;
-        int textViewWidth = textViewParams.width;
+        this.markerTextView.measure(0, 0);
+        this.markerTextView.getMeasuredHeight();
+        this.markerTextView.getMeasuredWidth();
+
+        //LayoutParams textViewParams = (LayoutParams) this.markerViewWrapper.getLayoutParams();
+        this.markerViewWrapper.measure(0, 0);
+        int textViewHeight = this.markerViewWrapper.getMeasuredHeight();
+        int textViewWidth = this.markerViewWrapper.getMeasuredWidth() + (2 * paddingVal);
 
         int canvasWidth = canvas.getWidth();
         int canvasHeight = canvas.getHeight();
@@ -304,9 +313,14 @@ public class CustomMarkerViewManager extends MarkerView {
             posy = 0;
         }
 
-        if((textViewWidth + posx) > canvasWidth){
-            posx = canvasWidth - textViewWidth;
-        }else if (posx < 0){
+        if((textViewWidth + posx) > canvasWidth) {
+            if(this.isPieChart){
+                posx = canvasWidth - textViewWidth;
+            } else{
+                float newOffset = posx - originalX;
+                posx = posx - (2*newOffset) - textViewWidth;
+            }
+        }else if(posx < 0) {
             posx = 0;
         }
 
@@ -330,6 +344,7 @@ public class CustomMarkerViewManager extends MarkerView {
     }
 
     public void setParentPadding(int paddingVal){
+        this.paddingVal = paddingVal;
         this.markerViewWrapper.setPadding(paddingVal, paddingVal, paddingVal, paddingVal);
     }
 
