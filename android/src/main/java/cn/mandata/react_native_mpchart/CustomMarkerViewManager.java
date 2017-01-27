@@ -294,12 +294,10 @@ public class CustomMarkerViewManager extends MarkerView {
         posx += getXOffset(posx);
         posy += getYOffset(posy);
 
-        // TODO: Check if the markerview goes out of bounds and correct it
         this.markerTextView.measure(0, 0);
         this.markerTextView.getMeasuredHeight();
         this.markerTextView.getMeasuredWidth();
-
-        //LayoutParams textViewParams = (LayoutParams) this.markerViewWrapper.getLayoutParams();
+        
         this.markerViewWrapper.measure(0, 0);
         int textViewHeight = this.markerViewWrapper.getMeasuredHeight();
         int textViewWidth = this.markerViewWrapper.getMeasuredWidth() + (2 * paddingVal);

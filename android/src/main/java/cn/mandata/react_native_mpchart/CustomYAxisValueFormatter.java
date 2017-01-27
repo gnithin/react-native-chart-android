@@ -23,7 +23,7 @@ public class CustomYAxisValueFormatter implements YAxisValueFormatter {
     public String customFormatter(float v){
         String finalStr = "";
 
-        String prefix = "$ ";
+        String prefix = "";
         String suffix = "";
         String numStr = "";
 
