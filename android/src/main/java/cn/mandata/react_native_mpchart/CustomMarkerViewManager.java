@@ -322,6 +322,13 @@ public class CustomMarkerViewManager extends MarkerView {
             posx = 0;
         }
 
+        // Invalidating the root view drawn
+        // NOTE: This is necessary because without this the contents of a markerview are not updated
+        // properly, even though you've added setText and the rest of the changes. This call is
+        // absolutely important, do NOT remove this. It does not seem to be a requirement in non-
+        // react-native environments. Only in a RN app this is needed
+        this.markerViewWrapper.invalidate();
+
         // translate to the correct position and draw
         canvas.translate(posx, posy);
         draw(canvas);
