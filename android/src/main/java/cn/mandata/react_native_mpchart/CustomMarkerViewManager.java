@@ -48,6 +48,7 @@ import android.util.Log;
  */
 public class CustomMarkerViewManager extends MarkerView {
     private static final boolean ENABLE_LOG = true;
+    private float device_density;
 
     private TextView markerTextView;
     private RelativeLayout markerViewWrapper;
@@ -69,6 +70,8 @@ public class CustomMarkerViewManager extends MarkerView {
         // this markerview only displays a textview
         markerTextView = (TextView) findViewById(R.id.markerViewId);
         markerViewWrapper = (RelativeLayout) findViewById(R.id.markViewWrapper);
+
+        this.device_density = context.getResources().getDisplayMetrics().density;
 
         setupOptions(markerMap);
 
@@ -165,6 +168,7 @@ public class CustomMarkerViewManager extends MarkerView {
         if(markerMap.hasKey("angularOffset")){
             try{
                 this.angularOffset = ((float)markerMap.getDouble("angularOffset"));
+                this.angularOffset = this.angularOffset * this.device_density;
                 this.isAngularOffset = true;
             }catch(UnexpectedNativeTypeException e){
                 if(ENABLE_LOG){
@@ -336,11 +340,11 @@ public class CustomMarkerViewManager extends MarkerView {
     }
 
     public void setXOffset(float xoffset){
-        this.xoffset = xoffset;
+        this.xoffset = xoffset * this.device_density;
     }
 
     public void setYOffset(float ypos){
-        this.yoffset = ypos;
+        this.yoffset = ypos * this.device_density;
     }
 
     public void setBackgroundColor(String colorString){
@@ -349,7 +353,7 @@ public class CustomMarkerViewManager extends MarkerView {
     }
 
     public void setParentPadding(int paddingVal){
-        this.paddingVal = paddingVal;
+        this.paddingVal = (int)(paddingVal * this.device_density);
         this.markerViewWrapper.setPadding(paddingVal, paddingVal, paddingVal, paddingVal);
     }
 
@@ -375,6 +379,7 @@ public class CustomMarkerViewManager extends MarkerView {
     }
 
     public void setLayoutHeight(int height){
+        height = (int)(this.device_density * height);
         RelativeLayout.LayoutParams layout = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 height
