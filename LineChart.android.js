@@ -3,9 +3,9 @@ import {
   NativeModules,
   findNodeHandle,
   requireNativeComponent, 
-  View
+  View,
+  UIManager,
 } from 'react-native';
-var UIManager = require('UIManager');
 
 const MPLineChart = requireNativeComponent('MPLineChart', LineChart);
 
