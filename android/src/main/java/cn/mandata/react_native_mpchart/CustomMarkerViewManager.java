@@ -304,7 +304,7 @@ public class CustomMarkerViewManager extends MarkerView {
         
         this.markerViewWrapper.measure(0, 0);
         int textViewHeight = this.markerViewWrapper.getMeasuredHeight();
-        int textViewWidth = this.markerViewWrapper.getMeasuredWidth() + (2 * paddingVal);
+        int textViewWidth = this.markerViewWrapper.getMeasuredWidth();
 
         int canvasWidth = canvas.getWidth();
         int canvasHeight = canvas.getHeight();
@@ -315,12 +315,12 @@ public class CustomMarkerViewManager extends MarkerView {
             posy = 0;
         }
 
-        if((textViewWidth + posx) > canvasWidth) {
+        if((textViewWidth + posx + (2*this.paddingVal)) > canvasWidth) {
             if(this.isPieChart){
                 posx = canvasWidth - textViewWidth;
             } else{
                 float newOffset = posx - originalX;
-                posx = posx - (2*newOffset) - textViewWidth;
+                posx = originalX - newOffset - textViewWidth;
             }
         }else if(posx < 0) {
             posx = 0;
